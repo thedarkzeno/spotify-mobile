@@ -1,0 +1,13 @@
+{
+  "name": "spotify-mobile",
+  "displayName": "spotify-mobile",
+  "expo": {
+    "name": "spotify-mobile",
+    "scheme": "spotify.mobile",
+    "slug": "spotify-mobile",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}

@@ -8,10 +8,15 @@
 </p>
 
 
-> Search by songs with an simple interface
+> Search by playlists with a simple interface
 
 <p align="center"><img src="./screenshots/1.jpeg"/></p>
 <p align="center"><img src="./screenshots/2.jpeg"/></p>
+<p align="center"><img src="./screenshots/3.jpeg"/></p>
+
+
+
+
 
 ## Summary 
 
@@ -28,8 +33,9 @@
 ## :eyes: Overview 
 
 <p align="justify">
-  With Spotify-MOBILE you can search in a catalog with millions of songs.
+  With Spotify-MOBILE you can search for spotify playlists.
 </p>
+
 
 
 

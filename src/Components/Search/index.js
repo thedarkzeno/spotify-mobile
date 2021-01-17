@@ -1,77 +1,111 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  StyleSheet,
-  View,
-  TextInput,
-  TouchableOpacity,
-  Image,
-} from "react-native";
-import search from "../../Assets/loupe.png";
 import api from "../../Services/api";
 
-import { SetResults, SetToken } from "../../Store/actions";
+import {
+  SetResults,
+  SetToken,
+  SetFilters,
+  SetApplyFilters,
+} from "../../Store/actions";
 
-const Search = () => {
+import { StyleSheet, View, TouchableOpacity, Image } from "react-native";
+import menuIcon from "../../Assets/menu.png";
+
+const Search = ({ navigation }) => {
   const dispatch = useDispatch();
   const ReduxState = useSelector((state) => state);
-  const [query, setQuery] = useState("");
-  const doSearch = () => {
-    if (query !== "" && query !== null) {
-      api
-        .get(`search?q=${encodeURI(query)}&type=track&offset=0&limit=10`, {
-          headers: {
-            Authorization: "Bearer " + ReduxState.token || "",
-          },
-        })
-        .then((res) => {
-            // console.log(res.data)
-          dispatch(SetResults(res.data));
-        })
-        .catch((error) => {
-        //   console.log(error);
-          //error may be caused by expiration of token, so we logout
-          dispatch(SetToken(""));
-        });
+  const [count, setCount] = useState(0);
+  const [time, setTime] = useState(0);
+  const [applyFilters, setApplyFilters] = useState({});
+
+  useEffect(() => {
+    api
+      .get("/", {
+        baseURL: "http://www.mocky.io/v2/5a25fade2e0000213aa90776",
+      })
+      .then((res) => {
+        // console.log(res.data);
+        for (let i = 0; i < 5; i++) {
+          setApplyFilters((prevState) => ({
+            ...prevState,
+            [res.data.filters[i].id]: "",
+          }));
+        }
+        dispatch(SetApplyFilters(applyFilters));
+        dispatch(SetFilters(res.data));
+      });
+  }, []);
+
+  // useEffect(() => {
+  //   const interval = setInterval(updateCount, 30000);
+  //   return () => clearInterval(interval);
+  // }, []);
+  // const updateCount = () => {
+  //   if (Date.now() >= time) {
+  //     setCount((c) => c + 1);
+  //     setTime(Date.now() + 29000);
+  //     console.log(count);
+  //   }
+  // };
+
+  useEffect(() => {
+    var searchString = "?";
+    for (const [key, value] of Object.entries(ReduxState.applyFilters)) {
+      if (value !== "") {
+        if (key === "country" && value === "en_US") {
+          searchString += `${key}=US&`;
+        } else {
+          searchString += `${key}=${value}&`;
+        }
+      }
     }
-  };
+
+    api
+      .get(`browse/featured-playlists${searchString}`, {
+        headers: {
+          Authorization: "Bearer " + ReduxState.token || "",
+        },
+      })
+      .then((res) => {
+        // console.log("searched");
+        // console.log(res.data);
+        dispatch(SetResults(res.data));
+      })
+      .catch(() => {
+        //error may be caused by expiration of token, so we logout
+        console.log("error");
+        dispatch(SetToken(""));
+        dispatch(SetRefresh(true));
+      });
+  }, [count, dispatch, ReduxState.applyFilters]);
+
   return (
     <View style={styles.container}>
-      <TextInput
-        value={query}
-        onChangeText={(e) => {
-          setQuery(e);
-        }}
-        placeholder="search"
-        style={styles.Input}
-      />
-      <TouchableOpacity onPress={doSearch} style={styles.Button}>
-        <Image source={search} style={styles.Image} />
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Config")}
+        style={styles.button}
+      >
+        <Image source={menuIcon} style={styles.Image} />
       </TouchableOpacity>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     position: "absolute",
-    bottom: 0,
+    top: 10,
+    left: -10,
     width: "100%",
-    backgroundColor: "#fff",
     zIndex: 2,
   },
-  Input: {
-    height: 40,
-    flex: 1,
-    paddingLeft: 10,
-    borderColor: "gray",
-    borderWidth: 1,
-  },
-  Button: {
-    width: 80,
-    justifyContent: "center",
-    alignItems: "center",
+  button: {
+    backgroundColor: "#fff",
+    padding: 5,
+    borderRadius: 5,
   },
   Image: {
     width: 40,

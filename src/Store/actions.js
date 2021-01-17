@@ -18,3 +18,24 @@ export const SetToken = (value) => {
     value,
   };
 };
+
+export const SetFilters = (value) => {
+  return {
+    type: "Set_Filters",
+    value,
+  };
+};
+
+export const SetApplyFilters = (value) => {
+  return {
+    type: "Set_ApplyFilters",
+    value,
+  };
+};
+
+export const SetQuery = (value) => {
+  return {
+    type: "Set_Query",
+    value,
+  };
+};

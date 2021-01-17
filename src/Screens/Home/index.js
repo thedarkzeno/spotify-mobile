@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, ImageBackground, View, Dimensions, Button } from "react-native";
+import { StyleSheet, ImageBackground, View, Dimensions } from "react-native";
 import background from "../../Assets/wallpaper.png";
 import Search from "../../Components/Search";
 import Results from "../../Components/Results";
@@ -9,8 +9,8 @@ const Home = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <ImageBackground source={background} style={styles.backgroundImage}>
-        <Search />
-        <Results />
+        <Search navigation={navigation} />
+        <Results  />
         {/* <Button title="logout" onPress={()=>navigation.navigate("Logout")}/> */}
       </ImageBackground>
     </View>

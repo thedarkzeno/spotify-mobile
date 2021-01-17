@@ -7,6 +7,7 @@ import { isAuthenticated } from "./Services/auth";
 
 import Login from "./Screens/Login";
 import Home from "./Screens/Home";
+import Config from "./Screens/Config";
 import Logout from "./Screens/Logout";
 
 const Stack = createStackNavigator();
@@ -23,6 +24,7 @@ function Routes() {
       }
     });
   }, [ReduxState.refresh, Dispatch]);
+  
 
   if (ReduxState.token !== "") {
     return (
@@ -33,6 +35,7 @@ function Routes() {
           }}
         >
           <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Config" component={Config} />
           <Stack.Screen name="Logout" component={Logout} />
         </Stack.Navigator>
         <StatusBar />

@@ -6,72 +6,50 @@ import {
   Text,
   StyleSheet,
   Image,
-  ImageBackground,
   TouchableOpacity,
 } from "react-native";
-import { Audio } from "expo-av";
-import playicon from "../../Assets/play.png";
 
 const Results = () => {
   const ReduxState = useSelector((state) => state);
   const [tracks, setTracks] = useState([]);
-  const [sound, setSound] = useState();
 
   useEffect(() => {
-    if (ReduxState.results.tracks) {
-      setTracks(ReduxState.results.tracks.items);
+    if (ReduxState.results.playlists) {
+      setTracks(ReduxState.results.playlists.items);
     }
   }, [ReduxState]);
-
-  useEffect(() => {
-    return sound
-      ? () => {
-        //   console.log("Unloading Sound");
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
-
-  async function playSound(url) {
-    // console.log("Loading Sound");
-    const { sound } = await Audio.Sound.createAsync({ uri: url });
-    setSound(sound);
-
-    // console.log("Playing Sound");
-    await sound.playAsync();
-  }
 
   if (tracks.length > 0) {
     return (
       <ScrollView style={styles.container}>
-        <View>
-          {ReduxState.results.tracks &&
-            tracks.map((item, index) => (
-              <View
-                style={styles.card}
-                key={`${item.name} - ${item.artists[0].name} - ${index}`}
-              >
-                <ImageBackground
-                  source={{ uri: item.album.images[0].url }}
-                  style={styles.imagebackground}
-                >
-                  {item.preview_url !== null && (
-                    <TouchableOpacity
-                      delayPressIn={0}
-                      onPress={() => {
-                        playSound(item.preview_url);
-                      }}
-                    >
-                      <Image source={playicon} style={styles.image} />
-                    </TouchableOpacity>
-                  )}
-                </ImageBackground>
+        <View style={{ padding: 10, paddingTop: 30 }}>
+          <Text style={styles.title}>{ReduxState.results.message}</Text>
+          {ReduxState.results.playlists &&
+            tracks.map((item, index) =>
+              ReduxState.query === "" ? (
+                <View style={styles.card} key={`${item.name} - ${index}`}>
+                  <Image
+                    source={{ uri: item.images[0].url }}
+                    style={styles.image}
+                  />
 
-                <Text style={styles.text}>
-                  {`${item.name} - ${item.artists[0].name}`}{" "}
-                </Text>
-              </View>
-            ))}
+                  <Text style={styles.text}>{`${item.name}`}</Text>
+                </View>
+              ) : (
+                item.name
+                  .toLowerCase()
+                  .includes(ReduxState.query.toLowerCase()) && (
+                  <View style={styles.card} key={`${item.name} - ${index}`}>
+                    <Image
+                      source={{ uri: item.images[0].url }}
+                      style={styles.image}
+                    />
+
+                    <Text style={styles.text}>{`${item.name}`}</Text>
+                  </View>
+                )
+              )
+            )}
         </View>
       </ScrollView>
     );
@@ -88,16 +66,18 @@ const styles = StyleSheet.create({
     height: "70%",
     backgroundColor: "#fff",
   },
-  imagebackground: {
-    width: 128,
-    height: 128,
-    opacity: 0.7,
+  title: {
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 24,
+    margin: "auto",
+    marginBottom: 20,
   },
   image: {
-    width: 64,
-    height: 64,
-    opacity: 1,
-    margin: 32,
+    width: 128,
+    height: 128,
   },
   card: {
     flex: 1,

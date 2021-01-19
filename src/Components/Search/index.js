@@ -37,17 +37,15 @@ const Search = ({ navigation }) => {
       });
   }, []);
 
-  // useEffect(() => {
-  //   const interval = setInterval(updateCount, 30000);
-  //   return () => clearInterval(interval);
-  // }, []);
-  // const updateCount = () => {
-  //   if (Date.now() >= time) {
-  //     setCount((c) => c + 1);
-  //     setTime(Date.now() + 29000);
-  //     console.log(count);
-  //   }
-  // };
+  useEffect(() => {
+    const interval = setInterval(updateCount, 30000);
+    return () => clearInterval(interval);
+  }, []);
+  const updateCount = () => {
+    setCount((c) => c + 1);
+
+    console.log(count);
+  };
 
   useEffect(() => {
     var searchString = "?";
